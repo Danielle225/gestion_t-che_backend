@@ -1,0 +1,41 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Utilisateurs {
+
+id  Int @id @default(autoincrement())
+email String @unique
+mot_de_passe String
+dateCreation  DateTime   @default(now()) 
+dateModification  DateTime   @updatedAt()
+
+tâche Tâches[]
+@@map("utilisateurs")
+}
+
+
+model Tâches {
+
+    id Int @id @default(autoincrement())
+    titre String
+    description String
+    status  StatusTâche @default(TODO)
+    dateCreation  DateTime   @default(now()) 
+    dateModification  DateTime   @updatedAt()
+
+    utilisateur_id Int
+    utilisateur   Utilisateurs @relation(fields: [utilisateur_id], references: [id], onDelete: Cascade)
+    @@map("tâches")
+}
+
+enum StatusTâche {
+  TODO
+  IN_PROGRESS
+  DONE
+}
